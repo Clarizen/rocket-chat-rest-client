@@ -37,6 +37,28 @@ public class RocketChatRestApiV1Users {
     }
 
     /**
+     * Gets the first number of users from the Rocket.Chat server, the amount
+     * depends on what the server has configured to return as the default count
+     * with the default being 50.
+     *
+     * @return an array of {@link User}s
+     * @throws IOException
+     *             is thrown if there was a problem connecting, including if the
+     *             result wasn't successful
+     */
+    public User[] list(RocketChatQueryParams params) throws IOException {
+        RocketChatClientResponse res = this.callBuilder.buildCall(RocketChatRestApiV1.UsersList, params);
+
+        if (!res.isSuccessful())
+            throw new IOException("The call to get the Users was unsuccessful: \"" + res.getError() + "\"");
+
+        if (!res.hasUsers())
+            throw new IOException("Get User Information failed to retrieve the users.");
+
+        return res.getUsers();
+    }
+
+    /**
      * Retrieves a {@link User} from the Rocket.Chat server.
      *
      * @param userId
